@@ -1,0 +1,5 @@
+DEFAULT_DATA_DIR = '~/.mlcc/data'
+FOOD_DATA_FILE = 'food_data.json'
+USER_DATA_FILE = 'user_data.json'
+DATA_FILES = [FOOD_DATA_FILE, USER_DATA_FILE]
+ROUNDING_DECIMALS_IN_FLOAT = 2
