@@ -18,11 +18,11 @@ def input_str(msg: str) -> str:
 def input_float(msg: str) -> float:
     result = None
     while result is None:
-        input_str = input(msg)
+        input_data = input(msg)
         try:
-            result = float(input_str)
+            result = float(input_data)
         except ValueError:
-            print(f'Invalid entry; a float was expected, instead got {input_str}')
+            print(f'Invalid entry; a float was expected, instead got {input_data}')
     return round(result, ROUNDING_DECIMALS_IN_FLOAT)
 
 
@@ -32,11 +32,11 @@ def input_unit_type() -> UnitType:
         msg += f'{element.name.capitalize()}({idx}) '
     result = len(UnitType)
     while result < 0 or result >= len(UnitType):
-        input_str = input(f"{msg}Unit type: ")
+        input_data = input(f"{msg}Unit type: ")
         try:
-            result = int(input_str)
+            result = int(input_data)
         except ValueError:
-            print(f'Invalid entry; a integer was expected, instead got {input_str}')
+            print(f'Invalid entry; a integer was expected, instead got {input_data}')
         if result < 0 or result >= len(UnitType):
             print(f'Invalid entry; value should be between 0 and {len(UnitType) - 1}')
     return list(UnitType)[result]
