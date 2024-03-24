@@ -21,7 +21,7 @@ class Food:
         return f"{self.name=}, {self.calories=}, {self.quantity=}, {self.unit_type=}, {self.unit_symbol=}"
 
     def serialize(self) -> str:
-        return f"{self.calories}|{self.quantity}|{self.unit_type.value}|{self.unit_symbol}"
+        return f"{self.calories}{self.quantity}|{self.unit_type.value}|{self.unit_symbol}"
 
     def is_valid(self) -> bool:
         if self.name == "" or self.calories < 0 or self.quantity <= 0 or self.unit_symbol == "":

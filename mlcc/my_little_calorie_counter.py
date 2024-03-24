@@ -1,7 +1,10 @@
+from datetime import date
 from pathlib import Path
 
+from mlcc.common import input_date
 from mlcc.defaults import DEFAULT_DATA_DIR, FOOD_DATA_FILE, USER_DATA_FILE, DATA_FILES
 from mlcc.food_data import FoodData
+from mlcc.user_data import UserData
 
 
 class MyLittleCalorieCounter:
@@ -22,14 +25,19 @@ class MyLittleCalorieCounter:
         data_dir_path: Path = Path(data_dir).expanduser().resolve()
         MyLittleCalorieCounter._create_data_files_if_not_exist(data_dir_path)
         self.food_data = FoodData(data_dir_path / FOOD_DATA_FILE)
+        self.user_data = UserData(data_dir_path / USER_DATA_FILE)
+        self.current_date = date.today()
         self.repl()
 
     def repl(self) -> None:
         input_str = ''
         while input_str.upper() != 'X':
-            input_str = input("(A)dd or (D)isplay foods / (S)ave / e(X)it -- Input: ")
-            if input_str.upper() not in 'ADSX':
+            input_str = input(f"[{self.current_date}] (C)hange date /"
+                              " (A)dd or (D)isplay foods / (S)ave / e(X)it -- Input: ")
+            if input_str.upper() not in 'CADSX':
                 print(f'Invalid input {input_str}')
+            elif input_str.upper() == 'C':
+                self.current_date = input_date()
             elif input_str.upper() == 'A':
                 self.food_data.add()
             elif input_str.upper() == 'D':

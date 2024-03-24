@@ -1,3 +1,4 @@
+from datetime import date
 from measurement.measures import Mass, Volume
 from measurement.utils import guess
 
@@ -63,3 +64,15 @@ def guess_quantity(quantity: float, unit_type: UnitType, unit_symbol: str) -> st
             return str(guess(quantity, unit_symbol, measures=[measure]))
     else:
         return "<Invalid quantity>"
+
+
+def input_date() -> date:
+    while True:
+        date_entry = input('Enter a date in YYYY-MM-DD format: ')
+        try:
+            year, month, day = map(int, date_entry.split('-'))
+            result = date(year, month, day)
+        except ValueError:
+            print(f"Invalid format {date_entry}")
+            continue
+        return result
