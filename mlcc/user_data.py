@@ -1,21 +1,23 @@
-import json
-
+from datetime import date
 from pathlib import Path
 from typing import Dict
 
-from mlcc.common import input_float, input_unit_type, is_quantity_valid, guess_quantity
-from mlcc.food import Food
-from mlcc.unit_type import UnitType
+from mlcc.meals_of_the_day import MealsOfTheDay
 
 
 class UserData:
     def __init__(self, user_data_file: Path) -> None:
         self.user_data_file = user_data_file
-        self.data: Dict[str, MealsOfTheDay] = {}
+        self.data: Dict[date, MealsOfTheDay] = {}
         self.load_data()
 
     def load_data(self) -> None:
         print(f'Loading user data from {self.user_data_file}')
+
+    def get_or_create_meals_of_the_day(self, meals_date: date) -> MealsOfTheDay:
+        if meals_date not in self.data:
+            self.data[meals_date] = MealsOfTheDay()
+        return self.data[meals_date]
 
     def add(self) -> None:
         print("NOT IMPLEMENTED")
@@ -25,10 +27,3 @@ class UserData:
 
     def save(self) -> None:
         print("NOT IMPLEMENTED")
-
-
-class MealsOfTheDay:
-
-    def __init__(self) -> None:
-        pass
-

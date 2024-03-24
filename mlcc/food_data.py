@@ -1,5 +1,4 @@
 import json
-
 from pathlib import Path
 from typing import Dict
 
@@ -60,3 +59,7 @@ class FoodData:
         print(f'Savin food data to {self.food_data_file}')
         with open(self.food_data_file, "w") as outfile:
             json.dump(serialized_data, outfile)
+
+    def select_food(self) -> Food:
+        print("NOT IMPLEMENTED")
+        pass
