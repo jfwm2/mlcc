@@ -29,26 +29,26 @@ class FoodData:
 
         if name in self.data:
             print('food name is already present, please choose another one')
+        else:
+            quantity = 0
+            unit_type = UnitType.NONE
+            unit_symbol = ''
+            valid_quantity = False
+            while not valid_quantity:
+                quantity = input_float(f"Quantity of {name}: ")
+                unit_type = input_unit_type()
+                unit_symbol = input("Unit symbol: ")
+                valid_quantity = is_quantity_valid(quantity, unit_type, unit_symbol)
+                if not valid_quantity:
+                    print(f"the quantity entered for food {name}; {quantity} {unit_symbol} "
+                          f"({unit_type.name.lower()}) is not valid")
 
-        quantity = 0
-        unit_type = UnitType.NONE
-        unit_symbol = ''
-        valid_quantity = False
-        while not valid_quantity:
-            quantity = input_float(f"Quantity of {name}: ")
-            unit_type = input_unit_type()
-            unit_symbol = input("Unit symbol: ")
-            valid_quantity = is_quantity_valid(quantity, unit_type, unit_symbol)
-            if not valid_quantity:
-                print(f"the quantity entered for food {name}; {quantity} {unit_symbol} "
-                      f"({unit_type.name.lower()}) is not valid")
+            guessed_quantity = guess_quantity(quantity, unit_type, unit_symbol)
+            calories = input_float(f"Calories in {guessed_quantity} of {name}: ")
 
-        guessed_quantity = guess_quantity(quantity, unit_type, unit_symbol)
-        calories = input_float(f"Calories in {guessed_quantity} of {name}: ")
-
-        food = Food(name=name, calories=calories, quantity=quantity, unit_type=unit_type, unit_symbol=unit_symbol)
-        self.data[name] = food
-        print(f"{food} entered")
+            food = Food(name=name, calories=calories, quantity=quantity, unit_type=unit_type, unit_symbol=unit_symbol)
+            self.data[name] = food
+            print(f"{food} entered")
 
     def display(self) -> None:
         for name, food in self.data.items():
