@@ -1,4 +1,5 @@
 from mlcc.common import is_quantity_valid, guess_quantity
+from mlcc.defaults import DEFAULT_SEPARATOR
 from mlcc.unit_type import UnitType
 
 
@@ -21,7 +22,8 @@ class Food:
         return f"{self.name=}, {self.calories=}, {self.quantity=}, {self.unit_type=}, {self.unit_symbol=}"
 
     def serialize(self) -> str:
-        return f"{self.calories}{self.quantity}|{self.unit_type.value}|{self.unit_symbol}"
+        return (f"{self.calories}{DEFAULT_SEPARATOR}{self.quantity}{DEFAULT_SEPARATOR}"
+                f"{self.unit_type.value}{DEFAULT_SEPARATOR}{self.unit_symbol}")
 
     def is_valid(self) -> bool:
         if self.name == "" or self.calories < 0 or self.quantity <= 0 or self.unit_symbol == "":
