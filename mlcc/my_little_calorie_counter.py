@@ -2,7 +2,7 @@ from datetime import date
 from pathlib import Path
 from typing import Optional
 
-from mlcc.common import input_date
+from mlcc.common import input_date, input_meal_type
 from mlcc.defaults import DEFAULT_DATA_DIR, FOOD_DATA_FILE, USER_DATA_FILE, DATA_FILES
 from mlcc.food_data import FoodData
 from mlcc.meals_of_the_day import Meal
@@ -36,14 +36,18 @@ class MyLittleCalorieCounter:
         current_meal: Optional[Meal] = None
         current_food: Optional[FOOD_DATA_FILE] = None
         while input_str.upper() != 'X':
-            input_str = input(f"[{self.current_date}] (C)hange date / choose (M)eal / add (F)ood to meal /"
-                              " (A)dd, (L)ist or s(E)lect food / (S)ave / e(X)it -- Input: ")
-            if input_str.upper() not in 'CMFALESX':
+            current_meal_str = '' if current_meal is None else f'[{current_meal.get_type().name.capitalize()}] '
+            current_food_str = '' if current_food is None else f'[{current_food.get_name()}] '
+            input_str = input(f"[{self.current_date}] (C)hange date / ch(O)ose meal {current_meal_str}/ "
+                              f"add (F)ood to meal / (A)dd, (L)ist, (D)isplay or s(E)lect food {current_food_str}/ "
+                              "(S)ave / e(X)it -- Input: ")
+            if input_str.upper() not in 'COFALDESX':
                 print(f'Invalid input {input_str}')
             elif input_str.upper() == 'C':
                 self.current_date = input_date()
-            elif input_str.upper() == 'M':
-                current_meal = self.user_data.get_or_create_meals_of_the_day(self.current_date).select_meal()
+            elif input_str.upper() == 'O':
+                current_meal = (
+                    self.user_data.get_or_create_meals_of_the_day(self.current_date).select_meal(input_meal_type()))
             elif input_str.upper() == 'F':
                 if current_meal is None:
                     print('No meal selected')
@@ -56,6 +60,11 @@ class MyLittleCalorieCounter:
                 self.food_data.add()
             elif input_str.upper() == 'L':
                 self.food_data.display()
+            elif input_str.upper() == 'D':
+                if current_food is None:
+                    print('No food selected')
+                    continue
+                print(current_food)
             elif input_str.upper() == 'E':
                 current_food = self.food_data.select_food()
             elif input_str.upper() == 'S':

@@ -21,6 +21,9 @@ class Food:
     def __repr__(self):
         return f"{self.name=}, {self.calories=}, {self.quantity=}, {self.unit_type=}, {self.unit_symbol=}"
 
+    def get_name(self) -> str:
+        return self.name
+
     def serialize(self) -> str:
         return (f"{self.calories}{DEFAULT_SEPARATOR}{self.quantity}{DEFAULT_SEPARATOR}"
                 f"{self.unit_type.value}{DEFAULT_SEPARATOR}{self.unit_symbol}")
