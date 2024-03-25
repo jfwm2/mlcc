@@ -3,7 +3,6 @@ from pathlib import Path
 from typing import Dict, Optional
 
 from mlcc.common import input_string, input_float, input_unit_type, is_quantity_valid, guess_quantity
-from mlcc.defaults import DEFAULT_SEPARATOR
 from mlcc.food import Food
 from mlcc.unit_type import UnitType
 
@@ -18,8 +17,7 @@ class FoodData:
         print(f'Loading food data from {self.food_data_file}')
         val_to_unit_type = {val.value: val for val in UnitType}
         serialized_data: Dict[str, str] = json.loads(self.food_data_file.read_text())
-        for name, serialized_food in serialized_data.items():
-            food_elements = serialized_food.split(DEFAULT_SEPARATOR)
+        for name, food_elements in serialized_data.items():
             assert len(food_elements) == 4
             self.data[name] = Food(name=name, calories=float(food_elements[0]), quantity=float(food_elements[1]),
                                    unit_type=val_to_unit_type[int(food_elements[2])], unit_symbol=food_elements[3])
@@ -55,7 +53,7 @@ class FoodData:
             print(f"{name}: {food}")
 
     def save(self) -> None:
-        serialized_data = {name: food.serialize() for name, food in self.data.items()}
+        serialized_data = {name: food.serializable_list() for name, food in self.data.items()}
         print(f'Saving food data to {self.food_data_file}')
         with open(self.food_data_file, "w") as outfile:
             json.dump(serialized_data, outfile)

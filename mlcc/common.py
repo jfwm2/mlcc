@@ -3,18 +3,13 @@ from datetime import date
 from measurement.measures import Mass, Volume
 from measurement.utils import guess
 
-from mlcc.defaults import DEFAULT_SEPARATOR, ROUNDING_DECIMALS_IN_FLOAT
+from mlcc.defaults import ROUNDING_DECIMALS_IN_FLOAT
 from mlcc.meal_type import MealType
 from mlcc.unit_type import UnitType
 
 
 def input_string(msg: str) -> str:
-    while True:
-        result = input(msg)
-        if DEFAULT_SEPARATOR in result:
-            print(f"Please do not use \"{DEFAULT_SEPARATOR}\"")
-            continue
-        return result
+    return input(msg)
 
 
 def input_float(msg: str) -> float:

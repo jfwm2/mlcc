@@ -33,7 +33,7 @@ class UserData:
 
     def display(self) -> None:
         for day_date, day_meals in self.data.items():
-            print(f"{day_date} -- {day_meals.calories()} --")
+            print(f"{day_date} -- {day_meals.calories():2f} calories")
             day_meals.display()
 
     def save(self) -> None:
