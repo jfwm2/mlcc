@@ -8,7 +8,7 @@ from mlcc.meal_type import MealType
 from mlcc.unit_type import UnitType
 
 
-def input_str(msg: str) -> str:
+def input_string(msg: str) -> str:
     while True:
         result = input(msg)
         if DEFAULT_SEPARATOR in result:
