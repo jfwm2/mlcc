@@ -1,7 +1,7 @@
 from typing import Dict
 
-from mlcc.food import Food
-from mlcc.meal_type import MealType
+from mlcc.engine.food import Food
+from mlcc.types.meal_type import MealType
 
 
 class Meal:
@@ -31,7 +31,7 @@ class Meal:
 
     def display(self):
         print(f"{self.type.name.capitalize()}:",
-              ','.join([f"{quantity} {food.unit_symbol} of {food.name}" for food, quantity in self.menu.items()]),
+              ', '.join([f"{quantity} {food.unit_symbol} of {food.name}" for food, quantity in self.menu.items()]),
               f'total of {self.calories():2f} calories')
 
     def serializable_dict(self) -> Dict[str, float]:

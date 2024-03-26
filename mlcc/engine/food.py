@@ -1,7 +1,7 @@
 from typing import List
 
 from mlcc.common import is_quantity_valid, guess_quantity
-from mlcc.unit_type import UnitType
+from mlcc.types.unit_type import UnitType
 
 
 class Food:

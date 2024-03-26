@@ -1,7 +1,7 @@
 from typing import Dict
 
-from mlcc.meal import Meal
-from mlcc.meal_type import MealType
+from mlcc.engine.meal import Meal
+from mlcc.types.meal_type import MealType
 
 
 class MealsOfTheDay:

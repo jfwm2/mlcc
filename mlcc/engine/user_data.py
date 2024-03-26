@@ -3,9 +3,9 @@ from datetime import date
 from pathlib import Path
 from typing import Dict
 
-from mlcc.food_data import FoodData
-from mlcc.meal_type import MealType
-from mlcc.meals_of_the_day import MealsOfTheDay
+from mlcc.engine.food_data import FoodData
+from mlcc.engine.meals_of_the_day import MealsOfTheDay
+from mlcc.types.meal_type import MealType
 
 
 class UserData:
