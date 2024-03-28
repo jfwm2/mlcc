@@ -17,29 +17,32 @@ class TextClient:
                               f"ch(O)ose of sho(W) meal {current_meal_str}/ "
                               f"add (F)ood to meal / (A)dd, l(I)st, (D)isplay or s(E)lect food {current_food_str}/ "
                               "(S)ave / e(X)it -- Input: ")
-            if input_str.upper() not in 'LCHOWFAIDESX':
-                print(f'Invalid input {input_str}')
-            elif input_str.upper() == 'L':
-                self.client.display_user_data()
-            elif input_str.upper() == 'C':
-                self.client.set_current_date()
-            elif input_str.upper() == 'H':
-                self.client.display_meals_of_the_day()
-            elif input_str.upper() == 'O':
-                self.client.set_current_meal()
-            elif input_str.upper() == 'W':
-                self.client.display_current_meal()
-            elif input_str.upper() == 'F':
-                self.client.add_current_food_to_current_meal()
-            elif input_str.upper() == 'A':
-                self.client.add_food_data()
-            elif input_str.upper() == 'I':
-                self.client.display_food_data()
-            elif input_str.upper() == 'D':
-                self.client.display_food()
-            elif input_str.upper() == 'E':
-                self.client.set_current_food()
-            elif input_str.upper() == 'S':
-                self.client.save()
-            else:
-                self.client.exit()
+            try:
+                if input_str.upper() not in 'LCHOWFAIDESX':
+                    print(f'Invalid input {input_str}')
+                elif input_str.upper() == 'L':
+                    self.client.display_user_data()
+                elif input_str.upper() == 'C':
+                    self.client.set_current_date()
+                elif input_str.upper() == 'H':
+                    self.client.display_meals_of_the_day()
+                elif input_str.upper() == 'O':
+                    self.client.set_current_meal()
+                elif input_str.upper() == 'W':
+                    self.client.display_current_meal()
+                elif input_str.upper() == 'F':
+                    self.client.add_current_food_to_current_meal()
+                elif input_str.upper() == 'A':
+                    self.client.add_food_data()
+                elif input_str.upper() == 'I':
+                    self.client.display_food_data()
+                elif input_str.upper() == 'D':
+                    self.client.display_food()
+                elif input_str.upper() == 'E':
+                    self.client.set_current_food()
+                elif input_str.upper() == 'S':
+                    self.client.save()
+                else:
+                    self.client.exit()
+            except NotImplementedError as nie:
+                print(f"{type(nie).__name__}: this feature was not implemented")
