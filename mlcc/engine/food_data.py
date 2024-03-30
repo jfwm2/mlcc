@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 from typing import Dict, Optional
 
-from mlcc.common.trie_node import TrieNode
+from mlcc.common.trie import Trie
 from mlcc.engine.food import Food
 from mlcc.types.unit_type import UnitType
 
@@ -11,7 +11,7 @@ class FoodData:
     def __init__(self, food_data_file: Path) -> None:
         self.food_data_file = food_data_file
         self.data: Dict[str, Food] = {}
-        self.trie = TrieNode()
+        self.trie = Trie()
         self.load_data()
 
     def load_data(self) -> None:

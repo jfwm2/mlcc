@@ -7,13 +7,13 @@ from mlcc.types.unit_type import UnitType
 
 
 def input_string(msg: str) -> str:
-    return input(msg)
+    return input(f"{msg}: ")
 
 
 def input_float(msg: str) -> float:
     result = None
     while result is None:
-        input_data = input(msg)
+        input_data = input(f"{msg}: ")
         try:
             result = float(input_data)
         except ValueError:
@@ -66,6 +66,22 @@ def input_date() -> date:
 
 
 def input_string_with_trie(msg: str, trie: TrieNode) -> str:
-    print(f"{msg} - {trie.get_next_chars()}")
-
-    return ""
+    result = ''
+    while True:
+        next_chars = trie.get_next_chars(result)
+        if len(next_chars) == 0:
+            break
+        result_is_word = trie.is_word(result)
+        s = input_string(f"{msg} "
+                         f"[{'|'.join([result + '(' + word[0] + ')' + word[1:] for word in next_chars.values()])}]"
+                         f"{f' (enter nothing to chose {result})' if result_is_word else ''}")
+        if s in next_chars:
+            result += next_chars[s]
+        elif s.swapcase() in next_chars:
+            result += next_chars[s.swapcase()]
+        elif s == '' and result_is_word:
+            break
+        else:
+            print("Invalid choice; select of one of the following characters "
+                  f"{', '.join(next_chars.keys())}{' or nothing' if result_is_word else ''}")
+    return result

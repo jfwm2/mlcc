@@ -13,7 +13,7 @@ class EngineClientImplementation(AbstractClientImplementation):
         self.engine = engine
 
     def add_food_data(self) -> None:
-        name = input_string("New food name: ")
+        name = input_string("New food name")
         if name in self.engine.food_data.data:
             print('food name is already present, please choose another one')
         else:
@@ -24,7 +24,7 @@ class EngineClientImplementation(AbstractClientImplementation):
             while not valid_quantity:
                 quantity = input_float(f"Quantity of {name}: ")
                 unit_type = input_unit_type()
-                unit_symbol = input_string("Unit symbol: ")
+                unit_symbol = input_string("Unit symbol")
                 valid_quantity = is_quantity_valid(quantity, unit_type, unit_symbol)
                 if not valid_quantity:
                     print(f"the quantity entered for food {name}; {quantity} {unit_symbol} "
@@ -49,8 +49,7 @@ class EngineClientImplementation(AbstractClientImplementation):
             print(self.current_food)
 
     def set_current_food(self) -> None:
-        food_name = input_string_with_trie("Name of the food to select: ", self.engine.food_data.trie)
-        food_name = input_string("Name of the food to select: ")
+        food_name = input_string_with_trie("Name of the food to select", self.engine.food_data.trie)
         self.current_food = self.engine.food_data.select_food(food_name)
 
     def get_current_food_name(self) -> str:
