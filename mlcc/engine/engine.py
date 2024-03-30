@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from mlcc.defaults import DEFAULT_DATA_DIR, FOOD_DATA_FILE, USER_DATA_FILE, DATA_FILES
+from mlcc.common.defaults import DEFAULT_DATA_DIR, FOOD_DATA_FILE, USER_DATA_FILE, DATA_FILES
 from mlcc.engine.food_data import FoodData
 from mlcc.engine.user_data import UserData
 

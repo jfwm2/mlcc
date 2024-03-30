@@ -1,6 +1,6 @@
 from mlcc.clients.client_implementations.abstract_client_implementation import AbstractClientImplementation
 from mlcc.clients.text_input import input_date, input_meal_type, input_float, input_string, input_unit_type
-from mlcc.common import is_quantity_valid, guess_quantity
+from mlcc.common.common import is_quantity_valid, guess_quantity
 from mlcc.engine.engine import Engine
 from mlcc.types.unit_type import UnitType
 

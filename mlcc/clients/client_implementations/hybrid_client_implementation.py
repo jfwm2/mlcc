@@ -1,5 +1,5 @@
 from mlcc.clients.client_implementations.abstract_client_implementation import AbstractClientImplementation
-from mlcc.defaults import DEFAULT_API_URL
+from mlcc.common.defaults import DEFAULT_API_URL
 
 
 class HybridClientImplementation(AbstractClientImplementation):

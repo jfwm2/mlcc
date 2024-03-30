@@ -1,6 +1,6 @@
 from datetime import date
 
-from mlcc.defaults import ROUNDING_DECIMALS_IN_FLOAT
+from mlcc.common.defaults import ROUNDING_DECIMALS_IN_FLOAT
 from mlcc.types.meal_type import MealType
 from mlcc.types.unit_type import UnitType
 
