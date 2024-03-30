@@ -1,7 +1,7 @@
 from datetime import date
 
 from mlcc.common.defaults import ROUNDING_DECIMALS_IN_FLOAT
-from mlcc.common.trie_node import TrieNode
+from mlcc.common.trie import Trie
 from mlcc.types.meal_type import MealType
 from mlcc.types.unit_type import UnitType
 
@@ -65,7 +65,7 @@ def input_date() -> date:
         return result
 
 
-def input_string_with_trie(msg: str, trie: TrieNode) -> str:
+def input_string_with_trie(msg: str, trie: Trie) -> str:
     result = ''
     while True:
         next_chars = trie.get_next_chars(result)

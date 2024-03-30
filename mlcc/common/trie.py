@@ -1,12 +1,15 @@
-from typing import Dict
+from typing import Dict, List, Optional
 
 from mlcc.common.trie_node import TrieNode
 
 
 class Trie:
 
-    def __init__(self) -> None:
+    def __init__(self, words: Optional[List[str]] = None) -> None:
         self.root = TrieNode()
+        if words is not None:
+            for word in words:
+                self.add_word(word)
 
     def __str__(self) -> str:
         return str(self.root)

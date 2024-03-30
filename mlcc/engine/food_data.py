@@ -1,8 +1,7 @@
 import json
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 
-from mlcc.common.trie import Trie
 from mlcc.engine.food import Food
 from mlcc.types.unit_type import UnitType
 
@@ -11,7 +10,6 @@ class FoodData:
     def __init__(self, food_data_file: Path) -> None:
         self.food_data_file = food_data_file
         self.data: Dict[str, Food] = {}
-        self.trie = Trie()
         self.load_data()
 
     def load_data(self) -> None:
@@ -25,7 +23,6 @@ class FoodData:
 
     def add(self, name: str, calories: float, quantity: float, unit_type: UnitType, unit_symbol: str) -> None:
         food = Food(name=name, calories=calories, quantity=quantity, unit_type=unit_type, unit_symbol=unit_symbol)
-        self.trie.add_word(name)
         self.data[name] = food
 
     def display(self) -> None:
@@ -38,5 +35,8 @@ class FoodData:
         with open(self.food_data_file, "w") as outfile:
             json.dump(serialized_data, outfile)
 
-    def select_food(self, name: str) -> Optional[Food]:
+    def get_food_by_name(self, name: str) -> Optional[Food]:
         return self.data.get(name, None)
+
+    def get_all_food_names(self) -> List[str]:
+        return list(self.data.keys())

@@ -15,4 +15,4 @@ def read_root():
 
 @app.get("/foods/{food_id}")
 def read_food(food_id: str, q: Union[str, None] = None):
-    return {"food_id": food_id, "q": q, "food": engine.food_data.select_food(food_id)}
+    return {"food_id": food_id, "q": q, "food": engine.food_data.get_food_by_name(food_id)}
