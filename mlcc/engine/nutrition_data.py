@@ -29,5 +29,8 @@ class NutritionData:
     def get_quantity(self) -> Quantity:
         return self.quantity
 
+    def get_calories_per_unit(self) -> float:
+        return self.calories / self.quantity.get_value()
+
     def serializable_list(self) -> List[str]:
         return [str(self.calories)] + self.quantity.serializable_list()

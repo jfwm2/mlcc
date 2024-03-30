@@ -24,17 +24,12 @@ class UserData:
             for meal_type_val, meal_dict in day_meals.items():
                 meal = self.data[date(year, month, day)].select_meal(val_to_meal_type[int(meal_type_val)])
                 for food_name, quantity in meal_dict.items():
-                    meal.add_food(food_data.get_food_by_name(food_name), quantity, False)
+                    meal.add_food(food_data.get_food_by_name(food_name), quantity)
 
     def get_or_create_meals_of_the_day(self, meals_date: date) -> MealsOfTheDay:
         if meals_date not in self.data:
             self.data[meals_date] = MealsOfTheDay()
         return self.get_meals_of_the_day(meals_date)
-
-    def display(self) -> None:
-        for day_date, day_meals in self.data.items():
-            print(f"{day_date} -- {day_meals.calories():2f} calories")
-            day_meals.display()
 
     def get_all_dates(self) -> List[date]:
         return list(self.data.keys())

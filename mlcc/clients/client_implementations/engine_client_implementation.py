@@ -61,7 +61,13 @@ class EngineClientImplementation(AbstractClientImplementation):
         return self.current_food.get_name()
 
     def display_user_data(self) -> None:
-        self.engine.get_user_data().display()
+        for day_date in self.engine.get_user_data().get_all_dates():
+            print(f"{day_date} -- {self.engine.get_user_data().get_meals_of_the_day(day_date).calories():2f} calories")
+            for meal in self.engine.get_user_data().get_meals_of_the_day(day_date).get_meals().values():
+                print(f"{meal.get_type().get_name().capitalize()}:",
+                      ', '.join([f"{quantity} {food.get_nutrition_data().get_quantity().get_unit_symbol()} of "
+                                 f"{food.get_name()}" for food, quantity in meal.menu.items()]),
+                      f'total of {meal.get_calories_in_meal():2f} calories')
 
     def display_meals_of_the_day(self) -> None:
         self.engine.get_user_data().get_or_create_meals_of_the_day(self.current_date).display()
@@ -90,6 +96,11 @@ class EngineClientImplementation(AbstractClientImplementation):
             quantity = (input_float(f"How much {self.current_food.unit_symbol} of "
                                     f"{self.current_food.name} would you like to add: "))
             self.current_meal.add_food(self.current_food, quantity)
+            new_quantity = self.current_meal.get_quantity_of_food_for_cuurent_meal()
+            print(f"{quantity} {food.get_nutrition_data().get_quantity().get_unit_symbol()} {food.get_name()} "
+                  f"added to {self.type.get_name().lower()}; "
+                  f"total {new_quantity} {food.get_nutrition_data().get_quantity().get_unit_type()} -> "
+                  f"{quantity * food.get_nutrition_data().get_calories_per_unit():2f} cal")
 
     def save(self) -> None:
         self.engine.get_food_data().save()

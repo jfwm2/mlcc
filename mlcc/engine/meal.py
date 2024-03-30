@@ -19,20 +19,15 @@ class Meal:
     def get_type(self) -> MealType:
         return self.type
 
-    def add_food(self, food: Food, quantity: float, display: bool = True) -> None:
-        new_quantity = self.menu.get(food, 0.0) + quantity
-        self.menu[food] = new_quantity
-        if display:
-            print(f"{quantity} {food.unit_symbol} {food.name} added to {self.type.name.lower()}; "
-                  f"total {new_quantity} {food.unit_symbol} -> {quantity * food.calories / food.quantity:2f} cal")
+    def add_food(self, food: Food, quantity_to_add: float) -> None:
+        self.menu[food] = self.menu.get(food, 0.0) + quantity_to_add
 
-    def calories(self) -> float:
-        return sum([quantity * food.calories / food.quantity for food, quantity in self.menu.items()])
+    def get_calories_in_meal(self) -> float:
+        return sum([quantity_in_menu * food.get_nutrition_data().get_calories_per_unit() for
+                    food, quantity_in_menu in self.menu.items()])
 
-    def display(self):
-        print(f"{self.type.name.capitalize()}:",
-              ', '.join([f"{quantity} {food.unit_symbol} of {food.name}" for food, quantity in self.menu.items()]),
-              f'total of {self.calories():2f} calories')
+    def get_quantity_in_meal(self, food: Food) -> float:
+        return self.menu.get(food, 0.0)
 
     def serializable_dict(self) -> Dict[str, float]:
-        return {food.name: quantity for food, quantity in self.menu.items()}
+        return {food.name: quantity_in_menu for food, quantity_in_menu in self.menu.items()}

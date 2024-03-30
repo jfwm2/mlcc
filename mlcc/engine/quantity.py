@@ -24,7 +24,7 @@ class Quantity:
         return self.unit_type
 
     def get_unit_symbol(self) -> str:
-        return self.get_unit_symbol()
+        return self.unit_symbol
 
     def guessed(self) -> str:
         return guess_quantity(self.value, self.unit_type, self.unit_symbol)
