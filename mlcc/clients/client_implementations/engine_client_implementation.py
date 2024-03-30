@@ -12,11 +12,11 @@ class EngineClientImplementation(AbstractClientImplementation):
     def __init__(self, engine: Engine) -> None:
         super().__init__()
         self.engine = engine
-        self.food_trie = Trie(engine.food_data.get_all_food_names())
+        self.food_trie = Trie(engine.get_food_data().get_all_food_names())
 
     def add_food_data(self) -> None:
         name = input_string("New food name")
-        if name in self.engine.food_data.data:
+        if self.engine.get_food_data().exists(name):
             print('food name is already present, please choose another one')
         else:
             quantity = 0
@@ -34,15 +34,16 @@ class EngineClientImplementation(AbstractClientImplementation):
 
             guessed_quantity = guess_quantity(quantity, unit_type, unit_symbol)
             calories = input_float(f"Calories in {guessed_quantity} of {name}: ")
-            self.engine.food_data.add(
+            self.engine.get_food_data().add(
                 name=name, calories=calories, quantity=quantity, unit_type=unit_type, unit_symbol=unit_symbol)
-            print(f"{self.engine.food_data.get_food_by_name(name)} entered")
+            print(f"{self.engine.get_food_data().get_food_by_name(name)} entered")
 
     def set_current_date(self) -> None:
         self.current_date = input_date()
 
     def display_food_data(self) -> None:
-        self.engine.food_data.display()
+        for name in self.engine.get_food_data().get_all_food_names():
+            print(f"{name}: {self.engine.get_food_data().get_food_by_name(name)}")
 
     def display_food(self) -> None:
         if self.current_food is None:
@@ -52,22 +53,22 @@ class EngineClientImplementation(AbstractClientImplementation):
 
     def set_current_food(self) -> None:
         food_name = input_string_with_trie("Name of the food to select", self.food_trie)
-        self.current_food = self.engine.food_data.get_food_by_name(food_name)
+        self.current_food = self.engine.get_food_data().get_food_by_name(food_name)
 
     def get_current_food_name(self) -> str:
         if self.current_food is None:
             return ''
-        return self.current_food.name
+        return self.current_food.get_name()
 
     def display_user_data(self) -> None:
-        self.engine.user_data.display()
+        self.engine.get_user_data().display()
 
     def display_meals_of_the_day(self) -> None:
-        self.engine.user_data.get_or_create_meals_of_the_day(self.current_date).display()
+        self.engine.get_user_data().get_or_create_meals_of_the_day(self.current_date).display()
 
     def set_current_meal(self) -> None:
-        self.current_meal = (
-            self.engine.user_data.get_or_create_meals_of_the_day(self.current_date).select_meal(input_meal_type()))
+        self.current_meal = (self.engine.get_user_data().get_or_create_meals_of_the_day(self.current_date).select_meal(
+            input_meal_type()))
 
     def get_current_meal_name(self) -> str:
         if self.current_meal is None:
@@ -91,8 +92,8 @@ class EngineClientImplementation(AbstractClientImplementation):
             self.current_meal.add_food(self.current_food, quantity)
 
     def save(self) -> None:
-        self.engine.food_data.save()
-        self.engine.user_data.save()
+        self.engine.get_food_data().save()
+        self.engine.get_user_data().save()
 
     @staticmethod
     def exit() -> None:

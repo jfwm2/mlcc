@@ -25,10 +25,6 @@ class FoodData:
         food = Food(name=name, calories=calories, quantity=quantity, unit_type=unit_type, unit_symbol=unit_symbol)
         self.data[name] = food
 
-    def display(self) -> None:
-        for name, food in self.data.items():
-            print(f"{name}: {food}")
-
     def save(self) -> None:
         serialized_data = {name: food.serializable_list() for name, food in self.data.items()}
         print(f'Saving food data to {self.food_data_file}')
@@ -40,3 +36,6 @@ class FoodData:
 
     def get_all_food_names(self) -> List[str]:
         return list(self.data.keys())
+
+    def exists(self, name: str) -> bool:
+        return name in self.data

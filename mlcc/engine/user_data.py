@@ -1,7 +1,7 @@
 import json
 from datetime import date
 from pathlib import Path
-from typing import Dict
+from typing import Dict, List, Optional
 
 from mlcc.engine.food_data import FoodData
 from mlcc.engine.meals_of_the_day import MealsOfTheDay
@@ -29,12 +29,18 @@ class UserData:
     def get_or_create_meals_of_the_day(self, meals_date: date) -> MealsOfTheDay:
         if meals_date not in self.data:
             self.data[meals_date] = MealsOfTheDay()
-        return self.data[meals_date]
+        return self.get_meals_of_the_day(meals_date)
 
     def display(self) -> None:
         for day_date, day_meals in self.data.items():
             print(f"{day_date} -- {day_meals.calories():2f} calories")
             day_meals.display()
+
+    def get_all_dates(self) -> List[date]:
+        return list(self.data.keys())
+
+    def get_meals_of_the_day(self, d: date) -> Optional[MealsOfTheDay]:
+        return self.data.get(d, None)
 
     def save(self) -> None:
         serializable_data = \

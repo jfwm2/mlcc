@@ -27,6 +27,12 @@ class Engine:
         self.food_data = FoodData(data_dir_path / FOOD_DATA_FILE)
         self.user_data = UserData(data_dir_path / USER_DATA_FILE, self.food_data)
 
+    def get_food_data(self) -> FoodData:
+        return self.food_data
+
+    def get_user_data(self) -> UserData:
+        return self.user_data
+
     def save(self):
         self.food_data.save()
         self.user_data.save()
