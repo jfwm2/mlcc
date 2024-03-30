@@ -1,7 +1,7 @@
-from enum import Enum
+from mlcc.types.generic_type import GenericType
 
 
-class MealType(Enum):
+class MealType(GenericType):
     OTHER = 0
     BREAKFAST = 1
     LUNCH = 2

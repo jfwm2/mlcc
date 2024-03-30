@@ -1,6 +1,6 @@
-from enum import Enum
+from mlcc.types.generic_type import GenericType
 
 
-class ClientImplementationType(Enum):
+class ClientImplementationType(GenericType):
     ENGINE = 0
     HYBRID = 1

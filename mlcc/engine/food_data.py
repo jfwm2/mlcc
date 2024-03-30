@@ -26,7 +26,7 @@ class FoodData:
         self.data[name] = food
 
     def save(self) -> None:
-        serialized_data = {name: food.serializable_list() for name, food in self.data.items()}
+        serialized_data = {name: food.get_nutrition_data().serializable_list() for name, food in self.data.items()}
         print(f'Saving food data to {self.food_data_file}')
         with open(self.food_data_file, "w") as outfile:
             json.dump(serialized_data, outfile)
