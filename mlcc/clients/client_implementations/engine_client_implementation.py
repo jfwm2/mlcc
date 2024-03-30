@@ -1,5 +1,6 @@
 from mlcc.clients.client_implementations.abstract_client_implementation import AbstractClientImplementation
-from mlcc.clients.text_input import input_date, input_meal_type, input_float, input_string, input_unit_type
+from mlcc.clients.text_input import input_date, input_meal_type, input_float, input_string, input_unit_type, \
+    input_string_with_trie
 from mlcc.common.common import is_quantity_valid, guess_quantity
 from mlcc.engine.engine import Engine
 from mlcc.types.unit_type import UnitType
@@ -33,6 +34,7 @@ class EngineClientImplementation(AbstractClientImplementation):
             calories = input_float(f"Calories in {guessed_quantity} of {name}: ")
             self.engine.food_data.add(
                 name=name, calories=calories, quantity=quantity, unit_type=unit_type, unit_symbol=unit_symbol)
+            print(f"{self.engine.food_data.select_food(name)} entered")
 
     def set_current_date(self) -> None:
         self.current_date = input_date()
@@ -47,6 +49,7 @@ class EngineClientImplementation(AbstractClientImplementation):
             print(self.current_food)
 
     def set_current_food(self) -> None:
+        food_name = input_string_with_trie("Name of the food to select: ", self.engine.food_data.trie)
         food_name = input_string("Name of the food to select: ")
         self.current_food = self.engine.food_data.select_food(food_name)
 
