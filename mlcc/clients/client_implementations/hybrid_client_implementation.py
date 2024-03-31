@@ -24,6 +24,16 @@ class HybridClientImplementation(AbstractClientImplementation):
                     if food_response is None or 'description' not in food_response else food_response['description']
                 print(f"{name}: {description}")
 
+    def display_food(self) -> None:
+        if self.current_food_name is None:
+            print('No food selected')
+        else:
+            response = requests.get(f"{self.api_url}/foods/{self.current_food_name}")
+            food_response = response.json().get('food', None)
+            description = '<food description could not be retrieved>' \
+                if food_response is None or 'description' not in food_response else food_response['description']
+            print(description)
+
     def set_current_food(self) -> None:
         food_names = self._get_food_names()
         if food_names is not None:

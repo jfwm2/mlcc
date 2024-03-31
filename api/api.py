@@ -1,9 +1,8 @@
-from datetime import date
 from typing import Union
 
 from fastapi import FastAPI, HTTPException
 
-from mlcc.common.common import get_meal_type_by_name, get_meal_type_by_value
+from mlcc.common.common import get_date_from_string, get_meal_type_by_name, get_meal_type_by_value
 from mlcc.engine.engine import Engine
 from mlcc.types.meal_type import MealType
 from mlcc.types.unit_type import UnitType
@@ -63,17 +62,24 @@ def read_data(show: Union[str, None] = None):
 
 @app.get("/data/{day_date}")
 def read_data_date(day_date: str):
-    year, month, day = map(int, day_date.split('-'))
-    meals = engine.get_user_data().get_meals_of_the_day(date(year, month, day))
+    actual_date = get_date_from_string(day_date)
+    if actual_date is None:
+        raise HTTPException(status_code=400, detail="Invalid date (YYYY-MM-DD expected)")
+
+    meals = engine.get_user_data().get_meals_of_the_day(actual_date)
     if meals is None:
         raise HTTPException(status_code=404, detail="No meals found for this date")
-    return {"date": date(year, month, day), "meals": meals.get_serializable_dict()}
+
+    return {"date": actual_date, "meals": meals.get_serializable_dict()}
 
 
 @app.get("/data/{day_date}/{meal_type}")
 def read_data_date_meal(day_date: str, meal_type: Union[str, int]):
-    year, month, day = map(int, day_date.split('-'))
-    meals = engine.get_user_data().get_meals_of_the_day(date(year, month, day))
+    actual_date = get_date_from_string(day_date)
+    if actual_date is None:
+        raise HTTPException(status_code=400, detail="Invalid date (YYYY-MM-DD expected)")
+
+    meals = engine.get_user_data().get_meals_of_the_day(actual_date)
     if meals is None:
         raise HTTPException(status_code=404, detail="No meals found for this date")
 
@@ -85,4 +91,4 @@ def read_data_date_meal(day_date: str, meal_type: Union[str, int]):
         raise HTTPException(status_code=404, detail="Meal type not found for this date")
 
     meal = meals.get_meal(actual_meal_type)
-    return {"date": date(year, month, day), "meal": meal.get_serializable_dict()}
+    return {"date": actual_date, "meal": meal.get_serializable_dict()}

@@ -1,3 +1,4 @@
+from datetime import date
 from typing import Optional
 
 from measurement.measures import Mass, Volume
@@ -51,3 +52,13 @@ def get_meal_type_by_value(value: int) -> Optional[MealType]:
         if t.get_value() == value:
             return t
     return None
+
+
+def get_date_from_string(date_str: str) -> Optional[date]:
+    try:
+        year, month, day = map(int, date_str.split('-'))
+        return date(year, month, day)
+    except SyntaxError:
+        return None
+    except ValueError:
+        return None

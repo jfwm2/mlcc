@@ -1,6 +1,8 @@
 from datetime import date
 from typing import Optional
 
+from mlcc.clients.text_input import input_date
+
 
 class AbstractClientImplementation:
 
@@ -13,7 +15,7 @@ class AbstractClientImplementation:
         raise NotImplementedError
 
     def set_current_date(self) -> None:
-        raise NotImplementedError
+        self.current_date = input_date()
 
     def display_food_data(self) -> None:
         raise NotImplementedError
