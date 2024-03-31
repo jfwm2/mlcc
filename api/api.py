@@ -70,7 +70,7 @@ def read_data_date(day_date: str):
     if meals is None:
         raise HTTPException(status_code=404, detail="No meals found for this date")
 
-    return {"date": actual_date, "meals": meals.get_serializable_dict()}
+    return {actual_date: meals.get_serializable_dict()}
 
 
 @app.get("/data/{day_date}/{meal_type}")

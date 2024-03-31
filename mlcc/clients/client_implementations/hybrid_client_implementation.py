@@ -1,3 +1,4 @@
+from datetime import date
 from typing import List, Optional
 
 import requests
@@ -49,7 +50,7 @@ class HybridClientImplementation(AbstractClientImplementation):
         day_date_strings = self._get_all_date_strings()
         if day_date_strings is not None:
             for day_date in map(get_date_from_string, day_date_strings):
-                print(f"{day_date} -- {0.0} calories")
+                self._display_meals_of_the_day(day_date)
 
     @staticmethod
     def exit() -> None:
@@ -68,3 +69,17 @@ class HybridClientImplementation(AbstractClientImplementation):
         if data_response is None:
             print("<data list could not be retrieved>")
         return data_response
+
+    def _display_meals_of_the_day(self, day_date: date) -> None:
+        response = requests.get(f"{self.api_url}/data/{day_date}")
+        meals_response = response.json().get(str(day_date), None)
+        if (meals_response is None or 'description' not in meals_response or
+                'meals' not in meals_response or not isinstance(meals_response['meals'], dict)):
+            print(f"<meals data could not be retrieved for {day_date}>")
+        else:
+            print(meals_response['description'])
+            for meal_type, meal in meals_response['meals'].items():
+                if 'description' in meal:
+                    print(meal['description'])
+                else:
+                    print(f"<meal description could not be retrieved for meal type {meal_type}>")
