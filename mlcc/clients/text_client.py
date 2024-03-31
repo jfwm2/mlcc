@@ -1,9 +1,9 @@
-from mlcc.clients.client_implementations.engine_client_implementation import EngineClientImplementation
+from mlcc.clients.client_implementations.abstract_client_implementation import AbstractClientImplementation
 
 
 class TextClient:
 
-    def __init__(self, client: EngineClientImplementation) -> None:
+    def __init__(self, client: AbstractClientImplementation) -> None:
         self.client = client
         self.repl()
 

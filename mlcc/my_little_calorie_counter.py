@@ -11,8 +11,7 @@ class MyLittleCalorieCounter:
     def __init__(self, client_type: ClientImplementationType = DEFAULT_CLIENT_IMPLEMENTATION_TYPE,
                  data_dir: str = DEFAULT_DATA_DIR, api_url: str = DEFAULT_API_URL) -> None:
         if client_type == ClientImplementationType.ENGINE:
-            engine = Engine(data_dir=data_dir)
-            client = EngineClientImplementation(engine)
+            client = EngineClientImplementation(Engine(data_dir=data_dir))
         elif client_type == ClientImplementationType.HYBRID:
             client = HybridClientImplementation(api_url=api_url)
         else:
