@@ -1,3 +1,4 @@
 fastapi
 measurement
+requests
 uvicorn[standard]

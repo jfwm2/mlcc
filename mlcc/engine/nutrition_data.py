@@ -1,4 +1,4 @@
-from typing import List
+from typing import Dict, List, Union
 
 from mlcc.engine.quantity import Quantity
 from mlcc.types.unit_type import UnitType
@@ -34,3 +34,8 @@ class NutritionData:
 
     def serializable_list(self) -> List[str]:
         return [str(self.calories)] + self.quantity.serializable_list()
+
+    def get_serializable_dict(self) -> Dict[str, Union[float, int, str]]:
+        result = {'calories': self.calories}
+        result.update(self.quantity.get_serializable_dict())
+        return result

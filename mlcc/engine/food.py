@@ -1,3 +1,5 @@
+from typing import Dict, Union
+
 from mlcc.engine.nutrition_data import NutritionData
 from mlcc.types.unit_type import UnitType
 
@@ -28,3 +30,8 @@ class Food:
             return False
         else:
             return self.nutrition_data.is_valid()
+
+    def get_serializable_dict(self) -> Dict[str, Union[float, int, str]]:
+        result = {'name': self.name, 'description': str(self)}
+        result.update(self.nutrition_data.get_serializable_dict())
+        return result

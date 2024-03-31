@@ -1,4 +1,4 @@
-from typing import List
+from typing import Dict, List, Union
 
 from mlcc.common.common import guess_quantity, is_quantity_valid
 from mlcc.types.unit_type import UnitType
@@ -34,3 +34,6 @@ class Quantity:
 
     def serializable_list(self) -> List[str]:
         return [str(self.value), str(self.unit_type.get_value()), self.unit_symbol]
+
+    def get_serializable_dict(self) -> Dict[str, Union[float, int, str]]:
+        return {'value': self.value, 'unit_type': self.unit_type.get_value(), 'unit_symbol': self.unit_symbol}
