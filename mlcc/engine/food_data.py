@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 
 from mlcc.engine.food import Food
 from mlcc.types.unit_type import UnitType
@@ -11,6 +11,9 @@ class FoodData:
         self.food_data_file = food_data_file
         self.data: Dict[str, Food] = {}
         self.load_data()
+
+    def __str__(self) -> str:
+        return f"Food data; content: {len(self.data)} foods"
 
     def load_data(self) -> None:
         print(f'Loading food data from {self.food_data_file}')
@@ -39,3 +42,11 @@ class FoodData:
 
     def exists(self, name: str) -> bool:
         return name in self.data
+
+    def get_serializable_dict(self) -> Dict[
+        str, Union[str, List[Dict[str, Union[str, Dict[str, Union[float, str, Dict[str, Union[float, int, str]]]]]]]]]:
+        return {
+            'data': [food.get_serializable_dict() for food in self.data.values()],
+            'description': str(self),
+            'type': str(self.__class__.__name__)
+        }

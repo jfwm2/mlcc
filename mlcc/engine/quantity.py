@@ -36,4 +36,10 @@ class Quantity:
         return [str(self.value), str(self.unit_type.get_value()), self.unit_symbol]
 
     def get_serializable_dict(self) -> Dict[str, Union[float, int, str]]:
-        return {'value': self.value, 'unit_type': self.unit_type.get_value(), 'unit_symbol': self.unit_symbol}
+        return {
+            'value': self.value,
+            'unit_type': self.unit_type.get_value(),
+            'unit_symbol': self.unit_symbol,
+            'description': str(self),
+            'type': str(self.__class__.__name__)
+        }

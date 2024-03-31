@@ -31,7 +31,11 @@ class Food:
         else:
             return self.nutrition_data.is_valid()
 
-    def get_serializable_dict(self) -> Dict[str, Union[float, int, str]]:
-        result = {'name': self.name, 'description': str(self)}
-        result.update(self.nutrition_data.get_serializable_dict())
-        return result
+    def get_serializable_dict(self) -> Dict[
+        str, Union[str, Dict[str, Union[float, str, Dict[str, Union[float, int, str]]]]]]:
+        return {
+            'name': self.name,
+            'nutrition_data': self.nutrition_data.get_serializable_dict(),
+            'description': str(self),
+            'type': str(self.__class__.__name__)
+        }
