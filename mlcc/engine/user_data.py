@@ -3,6 +3,7 @@ from datetime import date
 from pathlib import Path
 from typing import Dict, List, Optional, Union
 
+from mlcc.common.common import get_date_from_string
 from mlcc.engine.food_data import FoodData
 from mlcc.engine.meals_of_the_day import MealsOfTheDay
 from mlcc.types.meal_type import MealType
@@ -14,21 +15,24 @@ class UserData:
         self.data: Dict[date, MealsOfTheDay] = {}
         self.load_data(food_data)
 
+    def __str__(self) -> str:
+        return f"User data; content: {len(self.data)} dates"
+
     def load_data(self, food_data: FoodData) -> None:
         print(f'Loading user data from {self.user_data_file}')
         val_to_meal_type = {val.value: val for val in MealType}
         serialized_data: Dict[str, Dict[str, Dict[str, float]]] = json.loads(self.user_data_file.read_text())
         for day_date, day_meals in serialized_data.items():
-            year, month, day = map(int, day_date.split('-'))
-            self.data[date(year, month, day)] = MealsOfTheDay()
+            meals_date = get_date_from_string(day_date)
+            self.data[meals_date] = MealsOfTheDay(meals_date)
             for meal_type_val, meal_dict in day_meals.items():
-                meal = self.data[date(year, month, day)].select_meal(val_to_meal_type[int(meal_type_val)])
+                meal = self.data[meals_date].select_meal(val_to_meal_type[int(meal_type_val)])
                 for food_name, quantity in meal_dict.items():
                     meal.add_food(food_data.get_food_by_name(food_name), quantity)
 
     def get_or_create_meals_of_the_day(self, meals_date: date) -> MealsOfTheDay:
         if meals_date not in self.data:
-            self.data[meals_date] = MealsOfTheDay()
+            self.data[meals_date] = MealsOfTheDay(meals_date)
         return self.get_meals_of_the_day(meals_date)
 
     def get_all_dates(self) -> List[date]:

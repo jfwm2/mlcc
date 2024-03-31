@@ -1,3 +1,5 @@
+from datetime import date
+
 from mlcc.clients.client_implementations.abstract_client_implementation import AbstractClientImplementation
 from mlcc.clients.text_input import input_meal_type, input_float, input_string, input_unit_type, input_string_with_trie
 from mlcc.common.common import is_quantity_valid, guess_quantity, get_meal_type_by_name
@@ -57,19 +59,10 @@ class EngineClientImplementation(AbstractClientImplementation):
 
     def display_user_data(self) -> None:
         for day_date in self.engine.get_user_data().get_all_dates():
-            print(f"{day_date} -- {self.engine.get_user_data().get_meals_of_the_day(day_date).calories():2f} calories")
-            for meal in self.engine.get_user_data().get_meals_of_the_day(day_date).get_meals().values():
-                print(f"{meal.get_type().get_name().capitalize()}:",
-                      ', '.join([f"{quantity} {food.get_nutrition_data().get_quantity().get_unit_symbol()} of "
-                                 f"{food.get_name()}" for food, quantity in meal.menu.items()]),
-                      f'total of {meal.get_calories_in_meal():2f} calories')
+            self._display_meals_of_the_day(day_date)
 
     def display_meals_of_the_day(self) -> None:
-        for meal in self.engine.get_user_data().get_or_create_meals_of_the_day(self.current_date).get_meals().values():
-            print(f"{meal.get_type().get_name().capitalize()}:",
-                  ', '.join([f"{quantity} {food.get_nutrition_data().get_quantity().get_unit_symbol()} of "
-                             f"{food.get_name()}" for food, quantity in meal.menu.items()]),
-                  f'total of {meal.get_calories_in_meal():2f} calories')
+        self._display_meals_of_the_day(self.current_date)
 
     def set_current_meal(self) -> None:
         self.current_meal_name = (self.engine.get_user_data().get_or_create_meals_of_the_day(self.current_date).
@@ -85,11 +78,7 @@ class EngineClientImplementation(AbstractClientImplementation):
             print('No meal selected')
         else:
             meal_type = get_meal_type_by_name(self.current_meal_name)
-            meal = self.engine.get_user_data().get_or_create_meals_of_the_day(self.current_date).get_meal(meal_type)
-            print(f"{meal.get_type().get_name().capitalize()}:",
-                  ', '.join([f"{quantity} {food.get_nutrition_data().get_quantity().get_unit_symbol()} of "
-                             f"{food.get_name()}" for food, quantity in meal.menu.items()]),
-                  f'total of {meal.get_calories_in_meal():2f} calories')
+            print(self.engine.get_user_data().get_or_create_meals_of_the_day(self.current_date).get_meal(meal_type))
 
     def add_current_food_to_current_meal(self):
         if self.current_meal_name is None:
@@ -118,3 +107,9 @@ class EngineClientImplementation(AbstractClientImplementation):
     @staticmethod
     def exit() -> None:
         print("Exiting")
+
+    def _display_meals_of_the_day(self, day_date: date) -> None:
+        meals = self.engine.get_user_data().get_meals_of_the_day(day_date)
+        print(meals)
+        for meal in meals.get_meals().values():
+            print(meal)

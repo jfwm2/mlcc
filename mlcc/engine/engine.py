@@ -32,6 +32,9 @@ class Engine:
         self.user_data = UserData(data_dir_path / USER_DATA_FILE, self.food_data)
         self.global_data_file = data_dir_path / GLOBAL_DATA_FILE
 
+    def __str__(self) -> str:
+        return f"Engine -> {self.user_data} / {self.food_data}"
+
     def get_food_data(self) -> FoodData:
         return self.food_data
 

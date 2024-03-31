@@ -1,5 +1,6 @@
 from typing import Dict, Union
 
+from mlcc.common.defaults import ROUNDING_DECIMALS_IN_FLOAT
 from mlcc.engine.food import Food
 from mlcc.types.meal_type import MealType
 
@@ -11,10 +12,14 @@ class Meal:
         self.menu: Dict[Food, float] = {}
 
     def __str__(self) -> str:
-        return str({k.name: v for k, v in self.menu.items()})
+        result = f"{self.type.get_name().capitalize()}: "
+        result += ', '.join([f"{quantity} {food.get_nutrition_data().get_quantity().get_unit_symbol()} of "
+                             f"{food.get_name()}" for food, quantity in self.menu.items()])
+        result += f' total of {round(self.get_calories_in_meal(), ROUNDING_DECIMALS_IN_FLOAT)} calories'
+        return result
 
     def __repr__(self) -> str:
-        return str(self)
+        return str({k.name: v for k, v in self.menu.items()})
 
     def get_type(self) -> MealType:
         return self.type
