@@ -4,6 +4,7 @@ import requests
 
 from mlcc.clients.client_implementations.abstract_client_implementation import AbstractClientImplementation
 from mlcc.clients.text_input import input_string_with_trie
+from mlcc.common.common import get_date_from_string
 from mlcc.common.defaults import DEFAULT_API_URL
 from mlcc.common.trie import Trie
 
@@ -39,6 +40,17 @@ class HybridClientImplementation(AbstractClientImplementation):
         if food_names is not None:
             self.current_food_name = input_string_with_trie("Name of the food to select", Trie(food_names))
 
+    def get_current_food_name(self) -> str:
+        if self.current_food_name is None:
+            return ''
+        return self.current_food_name
+
+    def display_user_data(self) -> None:
+        day_date_strings = self._get_all_date_strings()
+        if day_date_strings is not None:
+            for day_date in map(get_date_from_string, day_date_strings):
+                print(f"{day_date} -- {0.0} calories")
+
     @staticmethod
     def exit() -> None:
         print("Exiting Hybrid Client")
@@ -49,3 +61,10 @@ class HybridClientImplementation(AbstractClientImplementation):
         if foods_response is None:
             print("<food list could not be retrieved>")
         return foods_response
+
+    def _get_all_date_strings(self) -> Optional[List[str]]:
+        response = requests.get(f"{self.api_url}/data")
+        data_response = response.json().get('data', None)
+        if data_response is None:
+            print("<data list could not be retrieved>")
+        return data_response
