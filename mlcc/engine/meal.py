@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Union
 
 from mlcc.engine.food import Food
 from mlcc.types.meal_type import MealType
@@ -31,3 +31,11 @@ class Meal:
 
     def serializable_dict(self) -> Dict[str, float]:
         return {food.name: quantity_in_menu for food, quantity_in_menu in self.menu.items()}
+
+    def get_serializable_dict(self) -> Dict[str, Union[int, str, Dict[str, float]]]:
+        return {
+            'meal_type': self.type.get_value(),
+            'menu': {food.get_name(): amount for food, amount in self.menu.items()},
+            'description': str(self),
+            'type': str(self.__class__.__name__)
+        }

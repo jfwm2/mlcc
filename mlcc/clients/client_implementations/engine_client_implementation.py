@@ -117,8 +117,7 @@ class EngineClientImplementation(AbstractClientImplementation):
                   f"{quantity * food.get_nutrition_data().get_calories_per_unit():2f} cal")
 
     def save(self) -> None:
-        self.engine.get_food_data().save()
-        self.engine.get_user_data().save()
+        self.engine.save()
 
     @staticmethod
     def exit() -> None:

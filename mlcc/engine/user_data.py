@@ -1,7 +1,7 @@
 import json
 from datetime import date
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 
 from mlcc.engine.food_data import FoodData
 from mlcc.engine.meals_of_the_day import MealsOfTheDay
@@ -43,3 +43,12 @@ class UserData:
         print(f'Saving user data to {self.user_data_file}')
         with open(self.user_data_file, "w") as outfile:
             json.dump(serializable_data, outfile)
+
+    def get_serializable_dict(self) -> Dict[
+        str, Union[str, Dict[str, Union[str, Dict[int, Dict[str, Union[int, str, Dict[str, float]]]]]]]]:
+        return {
+            'meals_per_day': {str(meal_date): meals_of_the_day.get_serializable_dict() for meal_date, meals_of_the_day
+                              in self.data.items()},
+            'description': str(self),
+            'type': str(self.__class__.__name__)
+        }
