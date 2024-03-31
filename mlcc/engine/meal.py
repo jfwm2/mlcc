@@ -6,8 +6,8 @@ from mlcc.types.meal_type import MealType
 
 class Meal:
 
-    def __init__(self, type: MealType) -> None:
-        self.type = type
+    def __init__(self, meal_type: MealType) -> None:
+        self.type = meal_type
         self.menu: Dict[Food, float] = {}
 
     def __str__(self) -> str:

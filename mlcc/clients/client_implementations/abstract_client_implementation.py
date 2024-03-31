@@ -1,16 +1,13 @@
 from datetime import date
 from typing import Optional
 
-from mlcc.engine.food import Food
-from mlcc.engine.meals_of_the_day import Meal
-
 
 class AbstractClientImplementation:
 
     def __init__(self) -> None:
         self.current_date = date.today()
-        self.current_meal: Optional[Meal] = None
-        self.current_food: Optional[Food] = None
+        self.current_meal_name: Optional[str] = None
+        self.current_food_name: Optional[str] = None
 
     def add_food_data(self) -> None:
         raise NotImplementedError

@@ -1,7 +1,7 @@
 from mlcc.clients.client_implementations.abstract_client_implementation import AbstractClientImplementation
 from mlcc.clients.text_input import input_date, input_meal_type, input_float, input_string, input_unit_type, \
     input_string_with_trie
-from mlcc.common.common import is_quantity_valid, guess_quantity
+from mlcc.common.common import is_quantity_valid, guess_quantity, get_meal_type_by_name
 from mlcc.common.trie import Trie
 from mlcc.engine.engine import Engine
 from mlcc.types.unit_type import UnitType
@@ -46,19 +46,18 @@ class EngineClientImplementation(AbstractClientImplementation):
             print(f"{name}: {self.engine.get_food_data().get_food_by_name(name)}")
 
     def display_food(self) -> None:
-        if self.current_food is None:
+        if self.current_food_name is None:
             print('No food selected')
         else:
-            print(self.current_food)
+            print(self.engine.get_food_data().get_food_by_name(self.current_food_name))
 
     def set_current_food(self) -> None:
-        food_name = input_string_with_trie("Name of the food to select", self.food_trie)
-        self.current_food = self.engine.get_food_data().get_food_by_name(food_name)
+        self.current_food_name = input_string_with_trie("Name of the food to select", self.food_trie)
 
     def get_current_food_name(self) -> str:
-        if self.current_food is None:
+        if self.current_food_name is None:
             return ''
-        return self.current_food.get_name()
+        return self.current_food_name
 
     def display_user_data(self) -> None:
         for day_date in self.engine.get_user_data().get_all_dates():
@@ -70,35 +69,50 @@ class EngineClientImplementation(AbstractClientImplementation):
                       f'total of {meal.get_calories_in_meal():2f} calories')
 
     def display_meals_of_the_day(self) -> None:
-        self.engine.get_user_data().get_or_create_meals_of_the_day(self.current_date).display()
+        for meal in self.engine.get_user_data().get_or_create_meals_of_the_day(self.current_date).get_meals().values():
+            print(f"{meal.get_type().get_name().capitalize()}:",
+                  ', '.join([f"{quantity} {food.get_nutrition_data().get_quantity().get_unit_symbol()} of "
+                             f"{food.get_name()}" for food, quantity in meal.menu.items()]),
+                  f'total of {meal.get_calories_in_meal():2f} calories')
 
     def set_current_meal(self) -> None:
-        self.current_meal = (self.engine.get_user_data().get_or_create_meals_of_the_day(self.current_date).select_meal(
-            input_meal_type()))
+        self.current_meal_name = (self.engine.get_user_data().get_or_create_meals_of_the_day(self.current_date).
+                                  select_meal(input_meal_type()).get_type().get_name()).capitalize()
 
     def get_current_meal_name(self) -> str:
-        if self.current_meal is None:
+        if self.current_meal_name is None:
             return ''
-        return self.current_meal.get_type().name
+        return self.current_meal_name
 
     def display_current_meal(self) -> None:
-        if self.current_meal is None:
+        if self.current_meal_name is None:
             print('No meal selected')
         else:
-            self.current_meal.display()
+            meal_type = get_meal_type_by_name(self.current_meal_name)
+            meal = self.engine.get_user_data().get_or_create_meals_of_the_day(self.current_date).get_meal(meal_type)
+            print(f"{meal.get_type().get_name().capitalize()}:",
+                  ', '.join([f"{quantity} {food.get_nutrition_data().get_quantity().get_unit_symbol()} of "
+                             f"{food.get_name()}" for food, quantity in meal.menu.items()]),
+                  f'total of {meal.get_calories_in_meal():2f} calories')
 
     def add_current_food_to_current_meal(self):
-        if self.current_meal is None:
+        if self.current_meal_name is None:
             print('No meal selected')
-        if self.current_food is None:
+        if self.current_food_name is None:
             print('No food selected')
-        if self.current_meal is not None and self.current_food is not None:
-            quantity = (input_float(f"How much {self.current_food.unit_symbol} of "
-                                    f"{self.current_food.name} would you like to add: "))
-            self.current_meal.add_food(self.current_food, quantity)
-            new_quantity = self.current_meal.get_quantity_of_food_for_cuurent_meal()
+        if self.current_meal_name is not None and self.current_food_name is not None:
+            food = self.engine.get_food_data().get_food_by_name(self.current_food_name)
+            if food is None:
+                print('No food selected')
+            meal_type = get_meal_type_by_name(self.current_meal_name)
+            meal = self.engine.get_user_data().get_or_create_meals_of_the_day(self.current_date).get_meal(meal_type)
+            quantity = (input_float(f"How much {food.get_nutrition_data().get_quantity().get_unit_symbol()} of "
+                                    f"{food.get_name()} would you like to add to "
+                                    f"{meal.get_type().get_name().capitalize()}"))
+            meal.add_food(food, quantity)
+            new_quantity = meal.get_quantity_in_meal(food)
             print(f"{quantity} {food.get_nutrition_data().get_quantity().get_unit_symbol()} {food.get_name()} "
-                  f"added to {self.type.get_name().lower()}; "
+                  f"added to {meal.get_type().get_name().lower()}; "
                   f"total {new_quantity} {food.get_nutrition_data().get_quantity().get_unit_type()} -> "
                   f"{quantity * food.get_nutrition_data().get_calories_per_unit():2f} cal")
 

@@ -11,8 +11,8 @@ class TextClient:
         input_str = ''
         while input_str.upper() != 'X':
             current_meal_str = '' \
-                if self.client.current_meal is None else f'[{self.client.get_current_meal_name().capitalize()}] '
-            current_food_str = '' if self.client.current_food is None else f'[{self.client.get_current_food_name()}] '
+                if self.client.current_meal_name is None else f'[{self.client.current_meal_name}] '
+            current_food_str = '' if self.client.current_food_name is None else f'[{self.client.current_food_name}] '
             input_str = input(f"[{self.client.current_date}] (L)ist, (C)hange, or s(H)ow date / "
                               f"ch(O)ose of sho(W) meal {current_meal_str}/ "
                               f"add (F)ood to meal / (A)dd, l(I)st, (D)isplay or s(E)lect food {current_food_str}/ "

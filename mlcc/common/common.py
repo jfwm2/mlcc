@@ -1,6 +1,9 @@
+from typing import Optional
+
 from measurement.measures import Mass, Volume
 from measurement.utils import guess
 
+from mlcc.types.meal_type import MealType
 from mlcc.types.unit_type import UnitType
 
 
@@ -34,3 +37,10 @@ def guess_quantity(quantity: float, unit_type: UnitType, unit_symbol: str) -> st
             return str(guess(quantity, unit_symbol, measures=[measure]))
     else:
         return "<Invalid quantity>"
+
+
+def get_meal_type_by_name(name: str) -> Optional[MealType]:
+    for t in MealType:
+        if t.get_name().upper() == name.upper():
+            return t
+    return None

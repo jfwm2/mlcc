@@ -24,5 +24,8 @@ class MealsOfTheDay:
     def get_meals(self) -> Dict[MealType, Meal]:
         return self.meals
 
+    def get_meal(self, meal_type: MealType) -> Meal:
+        return self.meals[meal_type]
+
     def serializable_dict(self) -> Dict[int, Dict[str, float]]:
         return {meal_type.get_value(): meal.serializable_dict() for meal_type, meal in self.meals.items()}
