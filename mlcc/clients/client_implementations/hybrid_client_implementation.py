@@ -52,6 +52,9 @@ class HybridClientImplementation(AbstractClientImplementation):
             for day_date in map(get_date_from_string, day_date_strings):
                 self._display_meals_of_the_day(day_date)
 
+    def display_meals_of_the_day(self) -> None:
+        self._display_meals_of_the_day(self.current_date)
+
     @staticmethod
     def exit() -> None:
         print("Exiting Hybrid Client")
