@@ -52,11 +52,6 @@ class EngineClientImplementation(AbstractClientImplementation):
     def set_current_food(self) -> None:
         self.current_food_name = input_string_with_trie("Name of the food to select", self.food_trie)
 
-    def get_current_food_name(self) -> str:
-        if self.current_food_name is None:
-            return ''
-        return self.current_food_name
-
     def display_user_data(self) -> None:
         for day_date in self.engine.get_user_data().get_all_dates():
             self._display_meals_of_the_day(day_date)
@@ -67,11 +62,6 @@ class EngineClientImplementation(AbstractClientImplementation):
     def set_current_meal(self) -> None:
         self.current_meal_name = (self.engine.get_user_data().get_or_create_meals_of_the_day(self.current_date).
                                   select_meal(input_meal_type()).get_type().get_name()).capitalize()
-
-    def get_current_meal_name(self) -> str:
-        if self.current_meal_name is None:
-            return ''
-        return self.current_meal_name
 
     def display_current_meal(self) -> None:
         if self.current_meal_name is None:

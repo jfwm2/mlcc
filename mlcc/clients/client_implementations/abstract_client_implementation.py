@@ -27,7 +27,7 @@ class AbstractClientImplementation:
         raise NotImplementedError
 
     def get_current_food_name(self) -> str:
-        raise NotImplementedError
+        return self.current_food_name
 
     def display_user_data(self) -> None:
         raise NotImplementedError
@@ -39,7 +39,7 @@ class AbstractClientImplementation:
         raise NotImplementedError
 
     def get_current_meal_name(self) -> str:
-        raise NotImplementedError
+        return self.current_meal_name
 
     def display_current_meal(self) -> None:
         raise NotImplementedError

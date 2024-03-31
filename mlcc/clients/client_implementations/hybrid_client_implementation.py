@@ -1,10 +1,10 @@
 from datetime import date
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 import requests
 
 from mlcc.clients.client_implementations.abstract_client_implementation import AbstractClientImplementation
-from mlcc.clients.text_input import input_string_with_trie
+from mlcc.clients.text_input import input_string_with_trie, input_ad_hoc_type
 from mlcc.common.common import get_date_from_string
 from mlcc.common.defaults import DEFAULT_API_URL
 from mlcc.common.trie import Trie
@@ -41,11 +41,6 @@ class HybridClientImplementation(AbstractClientImplementation):
         if food_names is not None:
             self.current_food_name = input_string_with_trie("Name of the food to select", Trie(food_names))
 
-    def get_current_food_name(self) -> str:
-        if self.current_food_name is None:
-            return ''
-        return self.current_food_name
-
     def display_user_data(self) -> None:
         day_date_strings = self._get_all_date_strings()
         if day_date_strings is not None:
@@ -54,6 +49,23 @@ class HybridClientImplementation(AbstractClientImplementation):
 
     def display_meals_of_the_day(self) -> None:
         self._display_meals_of_the_day(self.current_date)
+
+    def set_current_meal(self) -> None:
+        meal_type_dict = self._get_meal_type_dict()
+        if meal_type_dict is not None:
+            meal_type_value = input_ad_hoc_type(meal_type_dict, 'Meal')
+            self.current_meal_name = meal_type_dict[meal_type_value].capitalize()
+
+    def display_current_meal(self) -> None:
+        if self.current_meal_name is None:
+            print('No meal selected')
+        else:
+            response = requests.get(f"{self.api_url}/data/{self.current_date}/{self.current_meal_name}")
+            meal_response = response.json().get('meal', None)
+            if meal_response is None or 'description' not in meal_response:
+                print(f"<meal description could not be retrieved for {self.current_meal_name} of {self.current_date}>")
+            else:
+                print(meal_response['description'])
 
     @staticmethod
     def exit() -> None:
@@ -86,3 +98,11 @@ class HybridClientImplementation(AbstractClientImplementation):
                     print(meal['description'])
                 else:
                     print(f"<meal description could not be retrieved for meal type {meal_type}>")
+
+    def _get_meal_type_dict(self) -> Optional[Dict[int, str]]:
+        response = requests.get(f"{self.api_url}/types/meal")
+        meal_type_response = response.json().get('meal_type', None)
+        if meal_type_response is None or not isinstance(meal_type_response, dict):
+            print("<meal type definition could not be retrieved>")
+            return None
+        return {int(k): v for k, v in meal_type_response.items()}

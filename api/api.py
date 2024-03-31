@@ -79,7 +79,7 @@ def read_data_date_meal(day_date: str, meal_type: Union[str, int]):
     if actual_date is None:
         raise HTTPException(status_code=400, detail="Invalid date (YYYY-MM-DD expected)")
 
-    meals = engine.get_user_data().get_meals_of_the_day(actual_date)
+    meals = engine.get_user_data().get_or_create_meals_of_the_day(actual_date)
     if meals is None:
         raise HTTPException(status_code=404, detail="No meals found for this date")
 

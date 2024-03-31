@@ -1,4 +1,5 @@
 from datetime import date
+from typing import Dict
 
 from mlcc.common.defaults import ROUNDING_DECIMALS_IN_FLOAT
 from mlcc.common.trie import Trie
@@ -32,6 +33,7 @@ def input_unit_type() -> UnitType:
             result = int(input_data)
         except ValueError:
             print(f'Invalid entry; a integer was expected, instead got {input_data}')
+            continue
         if result < 0 or result >= len(UnitType):
             print(f'Invalid entry; value should be between 0 and {len(UnitType) - 1}')
     return list(UnitType)[result]
@@ -48,6 +50,7 @@ def input_meal_type() -> MealType:
             result = int(input_data)
         except ValueError:
             print(f'Invalid entry; a integer was expected, instead got {input_data}')
+            continue
         if result < 0 or result >= len(MealType):
             print(f'Invalid entry; value should be between 0 and {len(MealType) - 1}')
     return list(MealType)[result]
@@ -84,4 +87,21 @@ def input_string_with_trie(msg: str, trie: Trie) -> str:
         else:
             print("Invalid choice; select of one of the following characters "
                   f"{', '.join(next_chars.keys())}{' or nothing' if result_is_word else ''}")
+    return result
+
+
+def input_ad_hoc_type(type_dict: Dict[int, str], type_name: str) -> int:
+    msg = ""
+    for idx, element in type_dict.items():
+        msg += f'{element.capitalize()}({idx}) '
+    result = len(type_dict)
+    while result not in type_dict.keys():
+        input_data = input_string(f"{msg}{type_name} type")
+        try:
+            result = int(input_data)
+        except ValueError:
+            print(f'Invalid entry; a integer was expected, instead got {input_data}')
+            continue
+        if result not in type_dict.keys():
+            print(f'Invalid entry; value should be within {list(type_dict.keys())}')
     return result
