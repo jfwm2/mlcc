@@ -45,7 +45,7 @@ class UserData:
             json.dump(serializable_data, outfile)
 
     def get_serializable_dict(self) -> Dict[
-        str, Union[str, Dict[str, Union[str, Dict[int, Dict[str, Union[int, str, Dict[str, float]]]]]]]]:
+        str, Union[str, Dict[str, Union[float, str, Dict[int, Dict[str, Union[int, float, str, Dict[str, float]]]]]]]]:
         return {
             'meals_per_day': {str(meal_date): meals_of_the_day.get_serializable_dict() for meal_date, meals_of_the_day
                               in self.data.items()},

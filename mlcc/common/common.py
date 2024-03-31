@@ -44,3 +44,10 @@ def get_meal_type_by_name(name: str) -> Optional[MealType]:
         if t.get_name().upper() == name.upper():
             return t
     return None
+
+
+def get_meal_type_by_value(value: int) -> Optional[MealType]:
+    for t in MealType:
+        if t.get_value() == value:
+            return t
+    return None

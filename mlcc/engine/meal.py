@@ -32,10 +32,11 @@ class Meal:
     def serializable_dict(self) -> Dict[str, float]:
         return {food.name: quantity_in_menu for food, quantity_in_menu in self.menu.items()}
 
-    def get_serializable_dict(self) -> Dict[str, Union[int, str, Dict[str, float]]]:
+    def get_serializable_dict(self) -> Dict[str, Union[int, float, str, Dict[str, float]]]:
         return {
             'meal_type': self.type.get_value(),
             'menu': {food.get_name(): amount for food, amount in self.menu.items()},
+            "calories": self.get_calories_in_meal(),
             'description': str(self),
             'type': str(self.__class__.__name__)
         }
