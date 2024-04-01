@@ -141,6 +141,12 @@ class HybridClientImplementation(AbstractClientImplementation):
                           f"{food['nutrition_data']['quantity']['unit_symbol']} -> "
                           f"{round(new_calories, ROUNDING_DECIMALS_IN_FLOAT)} cal")
 
+    def save(self) -> None:
+        response = requests.post(f"{self.api_url}/engine/save")
+        ack = response.json().get("acknowledged", None)
+        result = ack if ack is not None and isinstance(ack, bool) else False
+        print(f"request to save was{'' if result else ' not'} acknowledged")
+
     @staticmethod
     def exit() -> None:
         print("Exiting Hybrid Client")

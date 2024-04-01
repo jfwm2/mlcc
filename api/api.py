@@ -39,6 +39,12 @@ def read_engine():
     return {"engine": engine.get_serializable_dict()}
 
 
+@app.post("/engine/save")
+def save_engine():
+    engine.save()
+    return {"acknowledged": True}
+
+
 @app.get("/foods")
 def read_foods(show: Union[str, None] = None):
     if show is None or show != "all":
