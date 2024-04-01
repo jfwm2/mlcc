@@ -14,12 +14,12 @@ class TextClient:
                 if self.client.get_current_meal_name() is None else f'[{self.client.get_current_meal_name()}] '
             current_food_str = '' \
                 if self.client.get_current_food_name() is None else f'[{self.client.get_current_food_name()}] '
-            input_str = input(f"[{self.client.current_date}] (L)ist, (C)hange, or s(H)ow date / "
-                              f"ch(O)ose of sho(W) meal {current_meal_str}/ "
-                              f"add (F)ood to meal / (A)dd, l(I)st, (D)isplay or s(E)lect food {current_food_str}/ "
-                              "(S)ave / e(X)it -- Input: ")
+            input_str = input(f"(L)ist, (C)hange, or s(H)ow date [{self.client.current_date}] / "
+                              f"ch(O)ose or sho(W) meal {current_meal_str}/ "
+                              f"add (F)ood to meal\n(A)dd, l(I)st, (D)isplay or s(E)lect food {current_food_str}/ "
+                              "(R)eload, (S)ave or e(X)it -- Input: ")
             try:
-                if input_str.upper() not in 'LCHOWFAIDESX':
+                if input_str.upper() not in 'LCHOWFAIDERSX':
                     print(f'Invalid input {input_str}')
                 elif input_str.upper() == 'L':
                     self.client.display_user_data()
@@ -41,6 +41,8 @@ class TextClient:
                     self.client.display_food()
                 elif input_str.upper() == 'E':
                     self.client.set_current_food()
+                elif input_str.upper() == 'R':
+                    self.client.reload()
                 elif input_str.upper() == 'S':
                     self.client.save()
                 else:

@@ -47,6 +47,9 @@ class AbstractClientImplementation:
     def add_current_food_to_current_meal(self):
         raise NotImplementedError
 
+    def reload(self) -> None:
+        raise NotImplementedError
+
     def save(self) -> None:
         raise NotImplementedError
 
