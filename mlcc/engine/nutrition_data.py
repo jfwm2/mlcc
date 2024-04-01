@@ -38,6 +38,7 @@ class NutritionData:
     def get_serializable_dict(self) -> Dict[str, Union[float, str, Dict[str, Union[float, int, str]]]]:
         return {
             'calories': self.calories,
+            'calories_per_unit': self.get_calories_per_unit(),
             'quantity': self.quantity.get_serializable_dict(),
             'description': str(self),
             'type': str(self.__class__.__name__)

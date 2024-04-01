@@ -82,14 +82,13 @@ class EngineClientImplementation(AbstractClientImplementation):
             meal_type = get_meal_type_by_name(self.current_meal_name)
             meal = self.engine.get_user_data().get_or_create_meals_of_the_day(self.current_date).get_meal(meal_type)
             quantity = (input_float(f"How much {food.get_nutrition_data().get_quantity().get_unit_symbol()} of "
-                                    f"{food.get_name()} would you like to add to "
-                                    f"{meal.get_type().get_name().capitalize()}"))
+                                    f"{food.get_name()} to add to {meal.get_type().get_name().capitalize()}"))
             meal.add_food(food, quantity)
             new_quantity = meal.get_quantity_in_meal(food)
             print(f"{quantity} {food.get_nutrition_data().get_quantity().get_unit_symbol()} {food.get_name()} "
                   f"added to {meal.get_type().get_name().lower()}; "
                   f"total {new_quantity} {food.get_nutrition_data().get_quantity().get_unit_type()} -> "
-                  f"{quantity * food.get_nutrition_data().get_calories_per_unit():2f} cal")
+                  f"{new_quantity * food.get_nutrition_data().get_calories_per_unit():2f} cal")
 
     def save(self) -> None:
         self.engine.save()

@@ -1,12 +1,12 @@
 from datetime import date
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 
 import requests
 
 from mlcc.clients.client_implementations.abstract_client_implementation import AbstractClientImplementation
-from mlcc.clients.text_input import input_string_with_trie, input_ad_hoc_type
+from mlcc.clients.text_input import input_ad_hoc_type, input_float, input_string_with_trie
 from mlcc.common.common import get_date_from_string
-from mlcc.common.defaults import DEFAULT_API_URL
+from mlcc.common.defaults import DEFAULT_API_URL, ROUNDING_DECIMALS_IN_FLOAT
 from mlcc.common.trie import Trie
 
 
@@ -67,6 +67,41 @@ class HybridClientImplementation(AbstractClientImplementation):
             else:
                 print(meal_response['description'])
 
+    def add_current_food_to_current_meal(self) -> None:
+        if self.current_meal_name is None:
+            print('No meal selected')
+        if self.current_food_name is None:
+            print('No food selected')
+        if self.current_meal_name is not None and self.current_food_name is not None:
+            food = self._get_food_dict(self.current_food_name)
+            if (food is None or 'nutrition_data' not in food
+                    or not self._is_valid_nutrition_data(food['nutrition_data'])):
+                print(f'Food {self.current_food_name} cannot be selected or contains invalid nutrition data')
+            quantity = (input_float(f"How much {food['nutrition_data']['quantity']['unit_symbol']} of "
+                                    f"{self.current_food_name} to add to {self.current_meal_name}"))
+            response = requests.get(
+                f"{self.api_url}/data/{self.current_date}/{self.current_meal_name}/add/{self.current_food_name}",
+                params={'q': quantity})
+            meal_response = response.json().get('meal', None)
+            if (meal_response is None or 'menu' not in meal_response
+                    or self.current_food_name not in meal_response['menu']
+                    or meal_response['menu'][self.current_food_name] is None):
+                print(f"<updated quantity of {self.current_food_name} "
+                      f"could not be retrieved for {self.current_meal_name} of {self.current_date}>")
+            else:
+                new_quantity = None
+                try:
+                    new_quantity = float(meal_response['menu'][self.current_food_name])
+                except ValueError:
+                    print(f"<invalid quantity ({meal_response['menu'][self.current_food_name]}) of "
+                          f"{self.current_food_name} retrieved for {self.current_meal_name} of {self.current_date}>")
+                if new_quantity is not None:
+                    new_calories = new_quantity * float(food['nutrition_data']['calories_per_unit'])
+                    print(f"{quantity} {food['nutrition_data']['quantity']['unit_symbol']} of {self.current_food_name} "
+                          f"added to {self.current_meal_name.lower()}; total {new_quantity} "
+                          f"{food['nutrition_data']['quantity']['unit_symbol']} -> "
+                          f"{round(new_calories, ROUNDING_DECIMALS_IN_FLOAT)} cal")
+
     @staticmethod
     def exit() -> None:
         print("Exiting Hybrid Client")
@@ -106,3 +141,34 @@ class HybridClientImplementation(AbstractClientImplementation):
             print("<meal type definition could not be retrieved>")
             return None
         return {int(k): v for k, v in meal_type_response.items()}
+
+    def _get_food_dict(self, name: str) -> Optional[Dict[str, Any]]:
+        response = requests.get(f"{self.api_url}/foods/{name}")
+        food_response = response.json().get('food', None)
+        return food_response
+
+    def _is_valid_nutrition_data(self, nutrition_data: Dict[str, Any]) -> bool:
+        if (not isinstance(nutrition_data, dict)
+                or 'calories' not in nutrition_data or nutrition_data['calories'] is None
+                or 'calories_per_unit' not in nutrition_data or nutrition_data['calories_per_unit'] is None
+                or 'quantity' not in nutrition_data or not self._is_valid_quantity(nutrition_data['quantity'])):
+            return False
+        try:
+            float(nutrition_data['calories'])
+            float(nutrition_data['calories_per_unit'])
+        except ValueError:
+            return False
+        return True
+
+    @staticmethod
+    def _is_valid_quantity(quantity: Dict[str, Any]) -> bool:
+        if (not isinstance(quantity, dict) or 'value' not in quantity or quantity['value'] is None
+                or 'unit_type' not in quantity or quantity['unit_type'] is None
+                or 'unit_symbol' not in quantity or quantity['unit_symbol'] is None):
+            return False
+        try:
+            float(quantity['value'])
+            int(quantity['unit_type'])
+        except ValueError:
+            return False
+        return True
