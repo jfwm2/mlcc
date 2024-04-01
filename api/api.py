@@ -92,3 +92,44 @@ def read_data_date_meal(day_date: str, meal_type: Union[str, int]):
 
     meal = meals.get_meal(actual_meal_type)
     return {"date": actual_date, "meal": meal.get_serializable_dict()}
+
+
+# experimenting with various methods
+@app.get("/data/{day_date}/{meal_type}/add/{food_id}")
+@app.patch("/data/{day_date}/{meal_type}/add/{food_id}")
+@app.post("/data/{day_date}/{meal_type}/add/{food_id}")
+@app.put("/data/{day_date}/{meal_type}/add/{food_id}")
+def read_data_date_meal(day_date: str, meal_type: Union[str, int], food_id: str, q: Union[str, None] = None):
+    actual_date = get_date_from_string(day_date)
+    if actual_date is None:
+        raise HTTPException(status_code=400, detail="Invalid date (YYYY-MM-DD expected)")
+
+    quantity = None
+    try:
+        quantity = float(q)
+    except ValueError:
+        pass
+    except TypeError:
+        pass
+    if quantity is None:
+        raise HTTPException(status_code=400, detail="Invalid quantity 'q' (it should be a number)")
+
+    meals = engine.get_user_data().get_or_create_meals_of_the_day(actual_date)
+    if meals is None:
+        raise HTTPException(status_code=404, detail="No meals found for this date")
+
+    if meal_type.isdigit():
+        actual_meal_type = get_meal_type_by_value(int(meal_type))
+    else:
+        actual_meal_type = get_meal_type_by_name(meal_type)
+    if actual_meal_type is None:
+        raise HTTPException(status_code=404, detail="Meal type not found for this date")
+
+    food = engine.food_data.get_food_by_name(food_id)
+    if food is None:
+        raise HTTPException(status_code=404, detail="Food not found")
+
+    meal = meals.get_meal(actual_meal_type)
+    meal.add_food(food, quantity)
+
+    return {"q": q, "date": actual_date, "meal": meal.get_serializable_dict()}
