@@ -25,9 +25,9 @@ class EngineClientImplementation(AbstractClientImplementation):
             unit_symbol = ''
             valid_quantity = False
             while not valid_quantity:
-                quantity = input_float(f"Quantity of {name}: ")
                 unit_type = input_unit_type()
                 unit_symbol = input_string("Unit symbol")
+                quantity = input_float(f"Quantity of {name}: ")
                 valid_quantity = is_quantity_valid(quantity, unit_type, unit_symbol)
                 if not valid_quantity:
                     print(f"the quantity entered for food {name}; {quantity} {unit_symbol} "

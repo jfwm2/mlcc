@@ -1,4 +1,6 @@
 fastapi
 measurement
+pydantic
 requests
+setuptools
 uvicorn[standard]

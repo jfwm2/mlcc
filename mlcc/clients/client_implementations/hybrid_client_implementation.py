@@ -4,7 +4,7 @@ from typing import Dict, List, Optional, Any
 import requests
 
 from mlcc.clients.client_implementations.abstract_client_implementation import AbstractClientImplementation
-from mlcc.clients.text_input import input_ad_hoc_type, input_float, input_string_with_trie
+from mlcc.clients.text_input import input_ad_hoc_type, input_float, input_string, input_string_with_trie
 from mlcc.common.common import get_date_from_string
 from mlcc.common.defaults import DEFAULT_API_URL, ROUNDING_DECIMALS_IN_FLOAT
 from mlcc.common.trie import Trie
@@ -15,6 +15,45 @@ class HybridClientImplementation(AbstractClientImplementation):
     def __init__(self, api_url=DEFAULT_API_URL) -> None:
         super().__init__()
         self.api_url = api_url
+
+    def add_food_data(self) -> None:
+        food_names = self._get_food_names()
+        if food_names is None:
+            return None
+        name = input_string("New food name")
+        if name in food_names:
+            print('food name is already present, please choose another one')
+            return None
+        unit_type_dict = self._get_unit_type_dict()
+        if unit_type_dict is None:
+            return None
+
+        quantity, unit_type_value, unit_symbol, guessed_quantity = 0, 0, '', None
+        while guessed_quantity is None:
+            unit_type_value = input_ad_hoc_type(unit_type_dict, 'Unit')
+            unit_symbol = input_string("Unit symbol")
+            quantity = input_float(f"Quantity of {name}")
+            response_guessed = requests.post(f"{self.api_url}/types/unit/guessed_quantity", json={
+                'value': quantity,
+                'unit_type': unit_type_value,
+                'unit_symbol': unit_symbol
+            })
+            guessed_quantity = response_guessed.json().get("guessed_quantity", None)
+            if guessed_quantity is None:
+                print(f"the quantity entered for food {name}; "
+                      f"{quantity} {unit_symbol} ({unit_type_value}) is not valid")
+
+        calories = input_float(f"Calories in {guessed_quantity} of {name}")
+        response_add = requests.post(f"{self.api_url}/foods/{name}", json={
+            'name': name,
+            'nutrition_data': {'calories': calories,
+                               'quantity': {
+                                   'value': quantity, 'unit_type': unit_type_value, 'unit_symbol': unit_symbol}}})
+        food_response = response_add.json().get('food', None)
+        if food_response is None or 'description' not in food_response:
+            print(f"An issue occurred when adding food {name}")
+        else:
+            print(f"{food_response['description']} entered")
 
     def display_food_data(self) -> None:
         food_names = self._get_food_names()
@@ -79,7 +118,7 @@ class HybridClientImplementation(AbstractClientImplementation):
                 print(f'Food {self.current_food_name} cannot be selected or contains invalid nutrition data')
             quantity = (input_float(f"How much {food['nutrition_data']['quantity']['unit_symbol']} of "
                                     f"{self.current_food_name} to add to {self.current_meal_name}"))
-            response = requests.get(
+            response = requests.post(
                 f"{self.api_url}/data/{self.current_date}/{self.current_meal_name}/add/{self.current_food_name}",
                 params={'q': quantity})
             meal_response = response.json().get('meal', None)
@@ -141,6 +180,14 @@ class HybridClientImplementation(AbstractClientImplementation):
             print("<meal type definition could not be retrieved>")
             return None
         return {int(k): v for k, v in meal_type_response.items()}
+
+    def _get_unit_type_dict(self) -> Optional[Dict[int, str]]:
+        response = requests.get(f"{self.api_url}/types/unit")
+        unit_type_response = response.json().get('unit_type', None)
+        if unit_type_response is None or not isinstance(unit_type_response, dict):
+            print("<unit type definition could not be retrieved>")
+            return None
+        return {int(k): v for k, v in unit_type_response.items()}
 
     def _get_food_dict(self, name: str) -> Optional[Dict[str, Any]]:
         response = requests.get(f"{self.api_url}/foods/{name}")
