@@ -1,6 +1,7 @@
 from typing import Union
 
 from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
 
 from mlcc.common.common import get_date_from_string, get_meal_type_by_name, get_meal_type_by_value
 from mlcc.engine.engine import Engine
@@ -9,6 +10,22 @@ from mlcc.types.unit_type import UnitType
 
 app = FastAPI()
 engine = Engine()
+
+
+class QuantityModel(BaseModel):
+    value: float
+    unit_type: int
+    unit_symbol: str
+
+
+class NutritionDataModel(BaseModel):
+    calories: float
+    quantity: QuantityModel
+
+
+class FoodModel(BaseModel):
+    name: str
+    nutrition_data: NutritionDataModel
 
 
 @app.get("/")
@@ -34,6 +51,23 @@ def read_food(food_id: str):
     food = engine.food_data.get_food_by_name(food_id)
     if food is None:
         raise HTTPException(status_code=404, detail="Food not found")
+    return {"food_id": food_id, "food": food.get_serializable_dict()}
+
+
+@app.post("/foods/{food_id}")
+@app.put("/foods/{food_id}")
+def create_food(food_id: str, food_item: FoodModel):
+    if food_id != food_item.dict()['name']:
+        raise HTTPException(status_code=400, detail=f"food_id ({food_id} "
+                                                    f"and food name ({food_item.dict()['name']}) do not match")
+    calories = food_item.dict()['name']['nutrition_data']['calories']
+    quantity = food_item.dict()['name']['nutrition_data']['quantity']
+    engine.get_food_data().add(name=food_id, calories=calories, quantity=quantity['values'],
+                               unit_type=quantity['unit_type'], unit_symbol=quantity['unit_symbol'])
+
+    food = engine.food_data.get_food_by_name(food_id)
+    if food is None:
+        raise HTTPException(status_code=400, detail=f"Food {food_id} cannot be added")
     return {"food_id": food_id, "food": food.get_serializable_dict()}
 
 
